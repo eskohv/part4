@@ -1,4 +1,4 @@
-const info = (...params) => {
+const info = (...params) =>
     console.log(...params)
 }
 
