@@ -5,13 +5,20 @@ const app = require('../app')
 const api = supertest(app)
 
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
 
 beforeEach(async () => {
+    await User.deleteMany({})
     await Blog.deleteMany({})
+
+    await helper.createTestDBUser()
 
     const blogObjects = helper.initialBlogs
         .map(blog => new Blog(blog))
-    const promiseArray = blogObjects.map(blog => blog.save())
+    const promiseArray = blogObjects.map(blog => {
+        blog.save()
+    })
     await Promise.all(promiseArray)
 })
 //ex 4.8
@@ -24,7 +31,7 @@ describe('application returns the correct', () => {
     })
     test('number of blogs', async () => {
         const response = await api.get('/api/blogs')
-
+        console.log(response.body)
         expect(response.body.length).toBe(helper.initialBlogs.length)
     })
 })
